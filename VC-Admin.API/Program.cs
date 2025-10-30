@@ -48,11 +48,12 @@ builder.Services
             ValidIssuer = builder.Configuration["Jwt:Issuer"],
             ValidateAudience = !string.IsNullOrWhiteSpace(builder.Configuration["Jwt:Audience"]),
             ValidAudience = builder.Configuration["Jwt:Audience"],
-            ValidateLifetime = true
+            ValidateLifetime = true,
+            ClockSkew = TimeSpan.Zero
         };
 
         opts.RequireHttpsMetadata = Convert.ToBoolean(builder.Configuration["Jwt:RequireHttpsMetadata"]); // PRD é TRUE
-        opts.SaveToken = true;
+        //opts.SaveToken = true;
     });
 
 builder.Services.AddAuthorization();
@@ -84,6 +85,7 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 #endregion
+
 builder.Services.AddOpenApi();
 
 var app = builder.Build();
@@ -115,6 +117,7 @@ app.UseAuthorization();
 app.MapControllers();
 #endregion
 
+#region Exemplo de declaração OpenAPI
 //app.MapGet("/weatherforecast", () =>
 //{
 //    var forecast =  Enumerable.Range(1, 5).Select(index =>
@@ -128,5 +131,6 @@ app.MapControllers();
 //    return forecast;
 //})
 //.WithName("GetWeatherForecast");
+#endregion
 
 app.Run();

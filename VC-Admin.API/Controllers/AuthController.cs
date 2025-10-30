@@ -40,7 +40,7 @@ public class AuthController : ControllerBase
         var auth = await _auth.LoginAsync(request);
         if (auth == null) return Unauthorized(new { message = "Credenciais inválidas!" });
 
-        // Deixar código abaixo para escrever no Cookie
+        #region Exemplo escrita no Cookie
         //var cookieOpts = new CookieOptions
         //{
         //    HttpOnly = true,
@@ -50,6 +50,7 @@ public class AuthController : ControllerBase
         //};
 
         //Response.Cookies.Append("jwt", auth.Token, cookieOpts);
+        #endregion
 
         return Ok(new { token = auth.Token, expiresAt = auth.ExpiresAt });
     }
