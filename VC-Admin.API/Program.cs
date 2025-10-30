@@ -1,23 +1,19 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi;
 using Microsoft.OpenApi.Models;
 using System.Text;
-using VC_Admin.Application.Interfaces.Services;
-using VC_Admin.Application.Services;
+using VC_Admin.Application.Mapping;
 using VC_Admin.Infrastructure.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
-#region Infrastructure (DbContext, repositórios)
+// Serviços da Aplicação (Infrastructure, DbContext, repositórios, scoped services)
 builder.Services.AddInfrastructure(builder.Configuration);
-#endregion
+builder.Services.AddRepositories(builder.Configuration);
+builder.Services.AddScopedServices(builder.Configuration);
+//builder.Services.AddAutoMapper(typeof(MappingProfile));
 
-#region Serviços / Automapper
-builder.Services.AddScoped<IAuthService, AuthService>();
-#endregion
-
-#region JWT - Configuração
+// JWT - Configuração
 var secret = builder.Configuration["Jwt:Secret"] ?? throw new InvalidOperationException("Jwt:Secret não foi configurado");
 var key = Encoding.UTF8.GetBytes(secret);
 
@@ -58,10 +54,8 @@ builder.Services
 
 builder.Services.AddAuthorization();
 builder.Services.AddControllers();
-#endregion
 
-#region Swagger
-builder.Services.AddEndpointsApiExplorer();
+// Swagger
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "API VC-Admin", Version = "v1" });
@@ -84,23 +78,18 @@ builder.Services.AddSwaggerGen(c =>
         }
     });
 });
-#endregion
-
-builder.Services.AddOpenApi();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
     app.UseSwagger();
     app.UseSwaggerUI(c =>
     {
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "VC-Admin API v1");
 
         // Tentar habilitar envio de cookies na UI (pode variar por versão do Swashbuckle)
-        // Se não compilar, remova esta linha.
+        // Se não compilar, remover este bloco
         try
         {
             c.ConfigObject.AdditionalItems["requestCredentials"] = "include";
@@ -109,28 +98,10 @@ if (app.Environment.IsDevelopment())
     });
 }
 
-#region Middlewares
+// Middlewares
 app.UseHttpsRedirection();
-
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
-#endregion
-
-#region Exemplo de declaração OpenAPI
-//app.MapGet("/weatherforecast", () =>
-//{
-//    var forecast =  Enumerable.Range(1, 5).Select(index =>
-//        new WeatherForecast
-//        (
-//            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-//            Random.Shared.Next(-20, 55),
-//            summaries[Random.Shared.Next(summaries.Length)]
-//        ))
-//        .ToArray();
-//    return forecast;
-//})
-//.WithName("GetWeatherForecast");
-#endregion
 
 app.Run();
