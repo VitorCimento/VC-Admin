@@ -11,7 +11,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddRepositories(builder.Configuration);
 builder.Services.AddScopedServices(builder.Configuration);
-//builder.Services.AddAutoMapper(typeof(MappingProfile));
+builder.Services.AddAutoMapper(opt => { opt.AddProfile(typeof(MappingProfile)); });
 
 // JWT - Configuração
 var secret = builder.Configuration["Jwt:Secret"] ?? throw new InvalidOperationException("Jwt:Secret não foi configurado");
