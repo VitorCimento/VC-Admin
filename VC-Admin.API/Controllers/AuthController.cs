@@ -56,7 +56,6 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("logout")]
-    [Authorize]
     public IActionResult Logout()
     {
         Response.Cookies.Delete("jwt");
@@ -64,7 +63,6 @@ public class AuthController : ControllerBase
     }
 
     [HttpGet("me")]
-    [Authorize]
     public IActionResult Me()
     {
         var claims = User.Claims.Select(c => new { c.Type, c.Value });

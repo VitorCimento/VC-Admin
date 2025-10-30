@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Microsoft.AspNetCore.Authorization;
 using System.Text;
 using VC_Admin.Application.Mapping;
 using VC_Admin.Infrastructure.Extensions;
@@ -39,20 +40,27 @@ builder.Services
         opts.TokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(key),
-            ValidateIssuer = !string.IsNullOrWhiteSpace(builder.Configuration["Jwt:Issuer"]),
-            ValidIssuer = builder.Configuration["Jwt:Issuer"],
-            ValidateAudience = !string.IsNullOrWhiteSpace(builder.Configuration["Jwt:Audience"]),
-            ValidAudience = builder.Configuration["Jwt:Audience"],
+            ValidateIssuer = true,
+            ValidateAudience = true,
             ValidateLifetime = true,
-            ClockSkew = TimeSpan.Zero
+            ClockSkew = TimeSpan.Zero,
+            ValidIssuer = builder.Configuration["Jwt:Issuer"],
+            ValidAudience = builder.Configuration["Jwt:Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(key)
         };
 
         opts.RequireHttpsMetadata = Convert.ToBoolean(builder.Configuration["Jwt:RequireHttpsMetadata"]); // PRD é TRUE
         //opts.SaveToken = true;
     });
 
-builder.Services.AddAuthorization();
+builder.Services.AddAuthorization(opts =>
+{
+    // Por padrão, todas as requisições devem ser acessíveis apenas se autenticado.
+    // Para liberar, explicitar [AllowAnonymous] onde for necessário
+    opts.FallbackPolicy = new AuthorizationPolicyBuilder()
+        .RequireAuthenticatedUser()
+        .Build();
+});
 builder.Services.AddControllers();
 
 // Swagger
