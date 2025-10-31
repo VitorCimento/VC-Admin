@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using VC_Admin.Application.DTO.Auth;
 using VC_Admin.Application.Interfaces.Services;
@@ -11,11 +12,13 @@ public class AuthController : ControllerBase
 {
     private readonly IAuthService _auth;
     private readonly IConfiguration _config;
+    private readonly IMapper _mapper;
 
-    public AuthController(IAuthService auth, IConfiguration config)
+    public AuthController(IAuthService auth, IConfiguration config, IMapper mapper)
     {
         _auth = auth;
         _config = config;
+        _mapper = mapper;
     }
 
     [HttpPost("register")]
@@ -25,7 +28,12 @@ public class AuthController : ControllerBase
         try
         {
             var user = await _auth.RegisterAsync(request);
-            return CreatedAtAction(null, new { id = user.Id, email = user.Email, username = user.Username });
+
+            return CreatedAtAction(
+                actionName: "GetById",
+                controllerName: "User",
+                routeValues: new { id = user.Id },
+                value: user);
         }
         catch (Exception ex)
         {
