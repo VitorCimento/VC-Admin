@@ -3,7 +3,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using VC_Admin.Application.DTO;
+using VC_Admin.Application.DTO.Auth;
 using VC_Admin.Application.Interfaces.Repository;
 using VC_Admin.Application.Interfaces.Services;
 using VC_Admin.Domain.Entities;
@@ -49,7 +49,7 @@ public class AuthService : IAuthService
         return new JwtSecurityTokenHandler().WriteToken(token);
     }
 
-    public async Task<AuthResponse> LoginAsync(LoginRequest request)
+    public async Task<AuthResponseDTO> LoginAsync(LoginRequestDTO request)
     {
         var user = await _userRepository.GetByEmailAsync(request.Email);
         if (user == null) return null;
@@ -59,10 +59,10 @@ public class AuthService : IAuthService
         var handler = new JwtSecurityTokenHandler();
         var jwt = handler.ReadJwtToken(token);
 
-        return new AuthResponse(token, jwt.ValidTo);
+        return new AuthResponseDTO(token, jwt.ValidTo);
     }
 
-    public async Task<User> RegisterAsync(RegisterRequest request)
+    public async Task<User> RegisterAsync(RegisterRequestDTO request)
     {
         var exists = await _userRepository.GetByEmailAsync(request.Email);
 

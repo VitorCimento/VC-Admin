@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using VC_Admin.Application.DTO;
+using VC_Admin.Application.DTO.Auth;
 using VC_Admin.Application.Interfaces.Services;
 
 namespace VC_Admin.API.Controllers;
@@ -20,7 +20,7 @@ public class AuthController : ControllerBase
 
     [HttpPost("register")]
     [AllowAnonymous]
-    public async Task<IActionResult> Register([FromBody] RegisterRequest request)
+    public async Task<IActionResult> Register([FromBody] RegisterRequestDTO request)
     {
         try
         {
@@ -35,7 +35,7 @@ public class AuthController : ControllerBase
 
     [HttpPost("login")]
     [AllowAnonymous]
-    public async Task<IActionResult> Login([FromBody] LoginRequest request)
+    public async Task<IActionResult> Login([FromBody] LoginRequestDTO request)
     {
         var auth = await _auth.LoginAsync(request);
         if (auth == null) return Unauthorized(new { message = "Credenciais inválidas!" });
