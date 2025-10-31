@@ -11,6 +11,7 @@ using VC_Admin.Infrastructure.Contexts;
 using VC_Admin.Infrastructure.Repositories;
 using System.Text;
 using Microsoft.OpenApi.Models;
+using VC_Admin.Application.DTO.User;
 
 namespace VC_Admin.Infrastructure.Extensions
 {
@@ -34,6 +35,7 @@ namespace VC_Admin.Infrastructure.Extensions
         public static IServiceCollection ConfigureScopedServices(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddScoped<IAuthService, AuthService>();
+            services.AddScoped<IUserService<UserResponseDTO, UserCreateDTO, UserUpdateDTO>, UserService>();
 
             return services;
         }
