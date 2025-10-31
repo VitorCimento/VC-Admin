@@ -34,26 +34,23 @@ namespace VC_Admin.Infrastructure.Contexts
 
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
-            SetEntityTimestamps();
+            SetUpdatedAt();
             return base.SaveChangesAsync(cancellationToken);
         }
 
         public override int SaveChanges()
         {
-            SetEntityTimestamps();
+            SetUpdatedAt();
             return base.SaveChanges();
         }
 
-        private void SetEntityTimestamps()
+        private void SetUpdatedAt()
         {
             var entries = ChangeTracker.Entries<BaseEntity>();
             var now = DateTime.UtcNow;
-            foreach (var entry in entries)
-            {
-                var prop = entry.State == EntityState.Added ? nameof(BaseEntity.CreatedAt) : nameof(BaseEntity.UpdatedAt);
 
-                entry.Property(prop).CurrentValue = now;
-            }
+            foreach (var entry in entries.Where(x => x.State == EntityState.Modified))
+                entry.Property(nameof(BaseEntity.UpdatedAt)).CurrentValue = now;
         }
     }
 }

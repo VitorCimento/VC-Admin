@@ -74,7 +74,7 @@ namespace VC_Admin.Infrastructure.Extensions
                         IssuerSigningKey = new SymmetricSecurityKey(key)
                     };
 
-                    opts.RequireHttpsMetadata = Convert.ToBoolean(configuration["Jwt:RequireHttpsMetadata"]);
+                    opts.RequireHttpsMetadata = configuration.GetValue<bool?>("Jwt:RequireHttpsMetadata") ?? true;
                     //opts.SaveToken = true;
                 });
 

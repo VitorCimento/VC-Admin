@@ -18,6 +18,9 @@ public class UserRepository : IUserRepository
 
     public async Task<User?> GetByEmailAsync(string email)
     {
-        return await _db.Users.SingleOrDefaultAsync(u => u.Email == email);
+        var normalized = email?.Trim().ToLowerInvariant();
+        if (string.IsNullOrEmpty(normalized)) return null;
+
+        return await _db.Users.SingleOrDefaultAsync(u => u.Email == normalized);
     }
 }

@@ -71,7 +71,7 @@ public class AuthService : IAuthService
         var user = new User
         {
             Username = request.Username,
-            Email = request.Email,
+            Email = request.Email.Trim().ToLowerInvariant(),
             PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.Password)
         };
 
