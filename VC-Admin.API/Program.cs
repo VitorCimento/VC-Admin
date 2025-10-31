@@ -1,91 +1,18 @@
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
-using Microsoft.AspNetCore.Authorization;
-using System.Text;
 using VC_Admin.Application.Mapping;
 using VC_Admin.Infrastructure.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Serviços da Aplicação (Infrastructure, DbContext, repositórios, scoped services)
-builder.Services.AddInfrastructure(builder.Configuration);
-builder.Services.AddRepositories(builder.Configuration);
-builder.Services.AddScopedServices(builder.Configuration);
 builder.Services.AddAutoMapper(opt => { opt.AddProfile(typeof(MappingProfile)); });
 
-// JWT - Configuração
-var secret = builder.Configuration["Jwt:Secret"] ?? throw new InvalidOperationException("Jwt:Secret não foi configurado");
-var key = Encoding.UTF8.GetBytes(secret);
+builder.Services.ConfigureInfrastructure(builder.Configuration);
+builder.Services.ConfigureRepositories(builder.Configuration);
+builder.Services.ConfigureScopedServices(builder.Configuration);
+builder.Services.ConfigureAuthentication(builder.Configuration);
+builder.Services.ConfigureAuthorization(builder.Configuration);
+builder.Services.ConfigureSwagger(builder.Configuration);
 
-builder.Services
-    .AddAuthentication(opts =>
-    {
-        opts.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-        opts.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-    })
-    .AddJwtBearer(opts =>
-    {
-        opts.Events = new JwtBearerEvents
-        {
-            OnMessageReceived = context =>
-            {
-                if (context.Request.Cookies.TryGetValue("jwt", out var cookieToken))
-                    context.Token = cookieToken;
-
-                return Task.CompletedTask;
-            }
-        };
-
-        opts.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateIssuerSigningKey = true,
-            ValidateIssuer = true,
-            ValidateAudience = true,
-            ValidateLifetime = true,
-            ClockSkew = TimeSpan.Zero,
-            ValidIssuer = builder.Configuration["Jwt:Issuer"],
-            ValidAudience = builder.Configuration["Jwt:Audience"],
-            IssuerSigningKey = new SymmetricSecurityKey(key)
-        };
-
-        opts.RequireHttpsMetadata = Convert.ToBoolean(builder.Configuration["Jwt:RequireHttpsMetadata"]); // PRD é TRUE
-        //opts.SaveToken = true;
-    });
-
-builder.Services.AddAuthorization(opts =>
-{
-    // Por padrão, todas as requisições devem ser acessíveis apenas se autenticado.
-    // Para liberar, explicitar [AllowAnonymous] onde for necessário
-    opts.FallbackPolicy = new AuthorizationPolicyBuilder()
-        .RequireAuthenticatedUser()
-        .Build();
-});
 builder.Services.AddControllers();
-
-// Swagger
-builder.Services.AddSwaggerGen(c =>
-{
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "API VC-Admin", Version = "v1" });
-
-    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-    {
-        Description = "Use 'Bearer {token}' ou teste com cookie 'jwt'.",
-        Name = "Authorization",
-        In = ParameterLocation.Header,
-        Type = SecuritySchemeType.Http,
-        Scheme = "bearer",
-        BearerFormat = "JWT"
-    });
-
-    c.AddSecurityRequirement(new OpenApiSecurityRequirement
-    {
-        {
-            new OpenApiSecurityScheme { Reference = new OpenApiReference {Type = ReferenceType.SecurityScheme, Id = "Bearer"}},
-            Array.Empty<string>()
-        }
-    });
-});
 
 var app = builder.Build();
 
