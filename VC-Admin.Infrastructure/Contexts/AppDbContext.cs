@@ -15,8 +15,6 @@ namespace VC_Admin.Infrastructure.Contexts
             modelBuilder.Entity<User>(entity =>
             {
                 entity.HasKey(u => u.Id);
-                entity.HasIndex(u => u.Email)
-                    .IsUnique();
                 entity.Property(u => u.Email)
                     .IsRequired()
                     .HasMaxLength(200);
@@ -29,6 +27,18 @@ namespace VC_Admin.Infrastructure.Contexts
                     .HasDefaultValueSql("now()");
                 entity.Property(u => u.UpdatedAt)
                     .HasColumnType("timestamp with time zone");
+                entity.HasIndex(u => u.Email)
+                    .IsUnique()
+                    .HasDatabaseName("IDX_User_Email_Normalized")
+                    .HasFilter(null);
+                entity.HasIndex(u => u.Email)
+                    .IsUnique()
+                    .HasDatabaseName("IDX_User_Email_TrimLower")
+                    .HasFilter(null);
+                entity.HasIndex(u => u.Username)
+                    .IsUnique()
+                    .HasDatabaseName("IDX_User_Username")
+                    .HasFilter(null);
             });
         }
 
