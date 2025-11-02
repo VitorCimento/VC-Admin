@@ -1,11 +1,9 @@
 <script setup lang="ts"></script>
 
 <template>
-  <h1>You did it!</h1>
-  <p>
-    Visit <a href="https://vuejs.org/" target="_blank" rel="noopener">vuejs.org</a> to read the
-    documentation
-  </p>
+  <div class="min-h-screen min-w-screen bg-linear-to-br from-sky-900 via-sky-500 to-sky-50">
+    <RouterView />
+  </div>
 </template>
 
 <style scoped></style>
