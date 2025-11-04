@@ -4,6 +4,7 @@
 <template>
   <section class="min-h-screen flex flex-col items-center justify-center text-center space-y-6 px-4">
     <!-- Icone -->
+    <UIcon name="ph:cloud-warning" class="text-9xl text-orange-700 animate-bounce" />
     <!-- Texto -->
     <div class="space-y-2">
       <p class="text-sm font-semibold tracking-widest text-orange-900">404</p>
