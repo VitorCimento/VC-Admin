@@ -5,6 +5,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddAutoMapper(opt => { opt.AddProfile(typeof(MappingProfile)); });
 
+builder.Services.ConfigureCors(builder.Configuration);
 builder.Services.ConfigureInfrastructure(builder.Configuration);
 builder.Services.ConfigureRepositories(builder.Configuration);
 builder.Services.ConfigureScopedServices(builder.Configuration);
@@ -35,6 +36,7 @@ if (app.Environment.IsDevelopment())
 
 // Middlewares
 app.UseHttpsRedirection();
+app.UseCors("VCAdmin");
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();

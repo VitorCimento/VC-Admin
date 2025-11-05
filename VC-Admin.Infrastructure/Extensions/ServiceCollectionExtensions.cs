@@ -126,5 +126,22 @@ namespace VC_Admin.Infrastructure.Extensions
 
             return services;
         }
+
+        public static IServiceCollection ConfigureCors(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.AddCors(opts =>
+            {
+                opts.AddPolicy(name: "VCAdmin",
+                    policy =>
+                    {
+                        policy
+                            .WithOrigins(configuration.GetSection("Cors:AllowedOrigins").Get<string[]>() ?? Array.Empty<string>())
+                            .AllowAnyHeader()
+                            .AllowAnyMethod()
+                            .AllowCredentials();
+                    });
+            });
+            return services;
+        }
     }
 }

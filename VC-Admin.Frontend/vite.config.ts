@@ -12,7 +12,14 @@ export default defineConfig({
     vue(),
     vueDevTools(),
     tailwindcss(),
-    ui(),
+    ui({
+      ui: {
+        icons: {
+          light: 'ph:moon-stars',
+          dark: 'ph:sun-horizon'
+        }
+      }
+    }),
   ],
   resolve: {
     alias: {
