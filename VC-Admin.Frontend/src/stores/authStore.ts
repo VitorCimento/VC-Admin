@@ -10,7 +10,7 @@ export const useAuthStore = defineStore('auth', () => {
     const loading = ref(false)
     const error = ref<string | null>(null)
 
-    const isAuthenticated = computed(() => !!token.value)
+    const isAuthenticated = computed(() => !!token.value && new Date(expiresAt.value || new Date(-2208988800000).toISOString()) > new Date())
 
     async function login(payload: LoginForm) {
         error.value = null

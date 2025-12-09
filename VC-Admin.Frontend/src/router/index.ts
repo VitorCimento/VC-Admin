@@ -33,6 +33,7 @@ const router = createRouter({
 router.beforeEach((to, _, next) => {
   const auth = useAuthStore()
   if (to.meta.requiresAuth && ! auth.isAuthenticated) {
+    auth.logout()
     next('/login')
   } else {
     next()

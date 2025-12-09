@@ -13,26 +13,9 @@
     </div>
     <!-- Botão -->
      <section class="m-auto max-w-lg my-10 px-6">
-      <RouterLink 
-        to="/"
-        class="
-          flex
-          justify-center
-          items-center
-          bg-slate-800
-          text-white
-          text-center
-          py-4
-          px-6
-          rounded-xl
-          hover:bg-slate-600
-          space-x-3
-          hover:shadow-2xl
-          active:scale-95
-          active:bg-slate-700
-          transition-all
-          duration-150
-          cursor-pointer">
+      <RouterLink to="/dashboard"
+        class="flex justify-center items-center bg-slate-800 text-white text-center py-4 px-6 rounded-xl hover:bg-slate-600 space-x-3 hover:shadow-2xl active:scale-95
+          active:bg-slate-700 transition-all duration-150 cursor-pointer">
         <span>Voltar ao Início</span>
       </RouterLink>
      </section>
