@@ -56,8 +56,8 @@ public class AuthService : IAuthService
     public async Task<AuthResponseDTO> LoginAsync(LoginRequestDTO request)
     {
         var user = await _userRepository.GetByEmailAsync(request.Email);
-        if (user == null) return null;
-        if (!BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash)) return null;
+        
+        if (user == null || !BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash)) return null;
 
         var token = GenerateToken(user);
         var handler = new JwtSecurityTokenHandler();
