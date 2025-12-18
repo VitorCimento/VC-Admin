@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { pt_br } from '@nuxt/ui/locale'
+const toaster = { position: 'bottom-center' }
 </script>
 
 <template>
-  <UApp :locale="pt_br">
+  <UApp :locale="pt_br" :toaster="toaster">
     <div class="min-h-screen min-w-screen bg-linear-to-br from-sky-900 dark:from-sky-700 via-sky-500 dark:via-sky-800 to-sky-50 dark:to-sky-950">
       <RouterView />
     </div>

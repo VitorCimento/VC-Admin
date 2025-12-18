@@ -8,6 +8,7 @@ const routes: RouteRecordRaw[] = [
   },
   {
     path: '/login',
+    name: 'login',
     component: () => import('@/pages/auth/Login.vue')
   },
   {
@@ -15,6 +16,11 @@ const routes: RouteRecordRaw[] = [
     name: 'dashboard',
     meta: { requiresAuth: true },
     component: () => import('@/pages/dashboard/Dashboard.vue')
+  },
+  {
+    path: '/register',
+    name: 'register',
+    component: () => import('@/pages/auth/Register.vue')
   },
   // Deixar essa rota por último. Trataiva de 404.
   {

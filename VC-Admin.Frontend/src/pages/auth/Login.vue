@@ -62,12 +62,20 @@ const handleLogin = async () => {
         <UButton type="submit" block :loading="auth.loading" color="secondary">
           Entrar
         </UButton>
-
-        <RouterLink to="/register">
-          <UButton color="secondary" variant="outline" block :disabled="auth.loading" class="cursor-pointer">
-            Não tem uma conta? Registre-se!
-          </UButton>
-        </RouterLink>
+      
+        <div class="space-y-3">
+          <RouterLink to="/forgot-password">
+            <UButton color="secondary" variant="outline" block :disabled="auth.loading" class="cursor-pointer">
+              Esqueci minha senha
+            </UButton>
+          </RouterLink>
+  
+          <RouterLink to="/register">
+            <UButton color="secondary" variant="outline" block :disabled="auth.loading" class="cursor-pointer">
+              Não tem uma conta? Registre-se!
+            </UButton>
+          </RouterLink>
+        </div>
       </UForm>
     </UCard>
   </div>
